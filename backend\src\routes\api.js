@@ -1,0 +1,21 @@
+import { Router } from 'express';
+import { rateLimit } from 'express-rate-limit';
+import { login, me, register } from '../controllers/authController.js';
+import { cancelBooking, createBooking, listBookings } from '../controllers/bookingController.js';
+import { recommend } from '../controllers/aiController.js';
+import { getServices } from '../controllers/serviceController.js';
+import { requireAuth } from '../middleware/auth.js';
+import { useDatabase } from '../data.js';
+
+const router = Router();
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 25, standardHeaders: 'draft-8', legacyHeaders: false });
+router.get('/health', (_req, res) => res.json({ ok: true, app: 'Khanu', database: useDatabase() ? 'mongodb' : 'demo-memory', ai: 'local model optional; ranker always ready' }));
+router.post('/auth/register', authLimiter, register);
+router.post('/auth/login', authLimiter, login);
+router.get('/auth/me', requireAuth, me);
+router.get('/services', getServices);
+router.get('/bookings', requireAuth, listBookings);
+router.post('/bookings', requireAuth, createBooking);
+router.patch('/bookings/:id/cancel', requireAuth, cancelBooking);
+router.post('/ai/recommend', recommend);
+export default router;

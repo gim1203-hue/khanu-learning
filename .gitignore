@@ -1,0 +1,12 @@
+node_modules/
+frontend/dist/
+.ollama/
+models/
+runtime/
+outputs/
+.env
+.env.*
+!.env.example
+coverage/
+npm-debug.log*
+.DS_Store

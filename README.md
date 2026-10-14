@@ -8,7 +8,7 @@ Learners may know they are stuck but not know which tutor, subject area, level, 
 
 ## Open in VS Code
 
-1. Open this project folder in VS Code: `outputs/local-assistant`.
+1. Open this repository folder in VS Code.
 2. Install Node.js 20 or newer.
 3. In the VS Code terminal, run `npm ci`.
 4. Copy `.env.example` to `.env` if you want to configure the backend. Set a long random `JWT_SECRET`; add `MONGODB_URI` to persist user and booking records.
@@ -64,4 +64,3 @@ This project demonstrates a sample tutoring catalog: **Algebra Foundations**, **
 ## Current completion status
 
 The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. Public deployment and persistent production data are not configured: they require a GitHub repository and (for the full backend) a hosted API plus MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
-
