@@ -9,13 +9,13 @@
 
 ## Open and run
 
-1. Open the `local-assistant` project folder in VS Code.
+1. Open the repository folder in VS Code.
 2. Open **Terminal → New Terminal** in that folder.
 3. Run `npm ci` to install the versions in `package-lock.json`.
 4. Copy `.env.example` to `.env`. Set `JWT_SECRET` to a long random value before exposing the backend. Set `MONGODB_URI` for data persistence; leave it unset for clearly labeled temporary memory mode.
 5. Run `npm run dev` and open `http://127.0.0.1:5173`.
 
-For a production-like local run, execute `npm run build` followed by `npm start`; the combined app uses port 4173 by default. The Windows helper `Start Assistant.bat` can perform the local startup steps.
+For a production-like local run, execute `npm run build` followed by `npm start`; the combined app uses port 4173 by default.
 
 ## Verification
 

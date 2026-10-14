@@ -9,8 +9,6 @@ This guide maps the source files to their purpose so the project can be explored
 | `package.json`, `package-lock.json` | Root commands and reproducible Node dependencies |
 | `.env.example` | Backend environment-variable template; copy it to an ignored `.env` for local use |
 | `.gitignore` | Excludes secrets, generated bundles, model weights, and runtime data |
-| `Start Assistant.bat` | Windows helper for building/starting Khanu |
-| `Install Model.bat` | Optional local model setup helper; not needed for matching |
 | `scripts/build-pages.mjs` | Sets the correct base path and static-demo mode for GitHub Pages builds |
 | `scripts/generate-capstone-docx.py` | Generates the companion Word capstone document from the completed project outline |
 | `.github/workflows/pages.yml` | GitHub Actions build and Pages deployment workflow |
@@ -51,7 +49,7 @@ This guide maps the source files to their purpose so the project can be explored
 | `services/recommendation.js` | Shared conceptually with Pages matcher; ranks catalog and optionally asks local LLM for wording |
 | `middleware/auth.js` | JWT validation and protected-route user loading |
 | `config/database.js` | Mongo connection, seed initialization, and explicit memory fallback |
-| `models/User.js`, `Service.js`, `Booking.js` | Mongoose document schemas |
+| `models/User.js`, `models/Service.js`, `models/Booking.js` | Mongoose document schemas |
 | `api.test.js`, `services/recommendation.test.js` | Authentication, booking lifecycle, route, and matcher tests |
 
 ## Documentation
