@@ -63,36 +63,4 @@ This project demonstrates a sample tutoring catalog: **Algebra Foundations**, **
 
 ## Current completion status
 
-The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. Public deployment and persistent production data are not configured: they require a GitHub repository and (for the full backend) a hosted API plus MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
-
-## Start assistant,bat
-
-@echo off
-setlocal
-cd /d "%~dp0"
-set MODEL_FILE=%LOCALAPPDATA%\MyAssistant\models\blobs\sha256-c5396e06af294bd101b30dce59131a76d2b773e76950acc870eda801d3ab0515
-where node >nul 2>nul
-if errorlevel 1 (
-  echo Node.js is required. Install it from https://nodejs.org and try again.
-  pause
-  exit /b 1
-)
-if not exist "node_modules\express\package.json" (
-  echo Installing Khanu app dependencies for first launch...
-  call npm install
-  if errorlevel 1 (echo Dependency installation failed.& pause & exit /b 1)
-)
-if not exist "frontend\dist\index.html" (
-  echo Building Khanu Learning for first launch...
-  call npm run build
-  if errorlevel 1 (echo The app build failed.& pause & exit /b 1)
-)
-if exist "%MODEL_FILE%" (
-  start "Khanu Local AI" /min "%~dp0runtime\lib\ollama\llama-server.exe" --model "%MODEL_FILE%" --host 127.0.0.1 --port 11435 --ctx-size 1024 --n-gpu-layers 0
-  timeout /t 6 /nobreak >nul
-) else (
-  echo Khanu will use smart tutor matching. Install the optional local model for generated explanations.
-)
-start "Khanu Learning" /min cmd /c "npm start"
-timeout /t 3 /nobreak >nul
-start "" http://127.0.0.1:4173
+The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. The browser demo is live at https://gim1203-hue.github.io/muham/. Persistent production data and full backend hosting are not configured; they require a hosted API and MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
