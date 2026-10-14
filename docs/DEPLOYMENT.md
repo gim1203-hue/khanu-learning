@@ -8,7 +8,7 @@ For real accounts and persistent shared booking records, deploy the Express back
 
 ## Publish the browser-demo edition
 
-1. Open the repository folder in VS Code.
+1. Open the `local-assistant` folder in VS Code.
 2. Create a GitHub repository for the project. Do not include `.env`, `node_modules`, model weights, or runtime files; `.gitignore` excludes those local items.
 3. Push the project source to the repository's `main` or `master` branch. The workflow deploys on pushes to those branches and can also be run manually from **Actions**.
 4. In GitHub repository **Settings → Pages**, choose **GitHub Actions** as the build and deployment source.
@@ -16,8 +16,6 @@ For real accounts and persistent shared booking records, deploy the Express back
 6. Open that URL on desktop and mobile; try search, theme/color controls, a recommendation, demo profile, booking, refresh, and cancellation.
 
 `npm run build:pages` sets the Vite base path from `GITHUB_REPOSITORY`, including the repository subpath used by project Pages sites. For an owner site named `<owner>.github.io`, it uses `/`.
-
-The current source repository is [gim1203-hue/khanu-learning](https://github.com/gim1203-hue/khanu-learning), and its published browser-demo site is [https://gim1203-hue.github.io/khanu-learning/](https://gim1203-hue.github.io/khanu-learning/). GitHub Actions reads the repository name automatically and builds project pages under `/khanu-learning/`.
 
 ## Connect a separately deployed backend (optional)
 
@@ -39,9 +37,9 @@ npm run build:pages
 
 For combined local frontend/API development use `npm run dev`; for a single local process use `npm run build` and `npm start`.
 
-## Production services still to configure
+## Not yet completed
 
-The browser-demo edition is live at the Pages URL above. Full-stack production persistence still requires a separately hosted backend and MongoDB connection. Do not call the Pages browser demo production authentication.
+No GitHub remote or public URL is embedded in this source copy. Publishing requires the project to be pushed to the specific repository and Pages enabled for it. Full-stack persistence additionally requires a hosted backend and MongoDB connection. Do not call the Pages browser demo production authentication.
 
 ## Official GitHub guidance
 

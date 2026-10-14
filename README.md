@@ -8,19 +8,17 @@ Learners may know they are stuck but not know which tutor, subject area, level, 
 
 ## Open in VS Code
 
-1. Open this repository folder in VS Code.
+1. Open this project folder in VS Code: `outputs/local-assistant`.
 2. Install Node.js 20 or newer.
 3. In the VS Code terminal, run `npm ci`.
 4. Copy `.env.example` to `.env` if you want to configure the backend. Set a long random `JWT_SECRET`; add `MONGODB_URI` to persist user and booking records.
 5. Run `npm run dev` and open `http://127.0.0.1:5173`.
 
-Use `npm run dev` while editing; use `npm run build` then `npm start` to preview the production build.
+On Windows, `Start Assistant.bat` can install/build when needed and launch the local app. Use `npm run dev` while editing; use `npm run build` then `npm start` to preview the production build.
 
 ## GitHub Pages
 
-Khanu Learning is published at [https://gim1203-hue.github.io/khanu-learning/](https://gim1203-hue.github.io/khanu-learning/). Its source repository is [gim1203-hue/khanu-learning](https://github.com/gim1203-hue/khanu-learning).
-
-The project includes a GitHub Actions workflow at `.github/workflows/pages.yml`. It builds and publishes the static frontend from this repository's `main` or `master` branch after each push. GitHub Pages is configured to use **GitHub Actions**.
+The project includes a GitHub Actions workflow at `.github/workflows/pages.yml`. Push this folder to a GitHub repository on `main` or `master`, then in **Settings → Pages**, set the publishing source to **GitHub Actions**. The workflow builds and publishes the static frontend after each push.
 
 With no backend URL configured, the deployed Pages edition uses an explicitly labeled browser demo. Matching runs in the browser and demo profiles/bookings are stored in that browser's local storage. Do not enter a real password or sensitive student information into this demo. GitHub Pages cannot run Express, MongoDB, or the local model process. For real accounts and records, deploy the Express backend and MongoDB separately, then set the repository variable `VITE_API_BASE_URL` to the HTTPS backend origin. See [GitHub Pages and full-stack deployment](docs/DEPLOYMENT.md).
 
@@ -65,4 +63,4 @@ This project demonstrates a sample tutoring catalog: **Algebra Foundations**, **
 
 ## Current completion status
 
-The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. The browser demo is live at https://gim1203-hue.github.io/khanu-learning/. Persistent production data and full backend hosting are not configured; they require a hosted API and MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
+The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. Public deployment and persistent production data are not configured: they require a GitHub repository and (for the full backend) a hosted API plus MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
