@@ -18,7 +18,9 @@ Use `npm run dev` while editing; use `npm run build` then `npm start` to preview
 
 ## GitHub Pages
 
-The project includes a GitHub Actions workflow at `.github/workflows/pages.yml`. Push this folder to a GitHub repository on `main` or `master`, then in **Settings → Pages**, set the publishing source to **GitHub Actions**. The workflow builds and publishes the static frontend after each push.
+Khanu Learning is published at [https://gim1203-hue.github.io/khanu-learning/](https://gim1203-hue.github.io/khanu-learning/). Its source repository is [gim1203-hue/khanu-learning](https://github.com/gim1203-hue/khanu-learning).
+
+The project includes a GitHub Actions workflow at `.github/workflows/pages.yml`. It builds and publishes the static frontend from this repository's `main` or `master` branch after each push. GitHub Pages is configured to use **GitHub Actions**.
 
 With no backend URL configured, the deployed Pages edition uses an explicitly labeled browser demo. Matching runs in the browser and demo profiles/bookings are stored in that browser's local storage. Do not enter a real password or sensitive student information into this demo. GitHub Pages cannot run Express, MongoDB, or the local model process. For real accounts and records, deploy the Express backend and MongoDB separately, then set the repository variable `VITE_API_BASE_URL` to the HTTPS backend origin. See [GitHub Pages and full-stack deployment](docs/DEPLOYMENT.md).
 
@@ -63,4 +65,4 @@ This project demonstrates a sample tutoring catalog: **Algebra Foundations**, **
 
 ## Current completion status
 
-The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. The browser demo is live at https://gim1203-hue.github.io/muham/. Persistent production data and full backend hosting are not configured; they require a hosted API and MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
+The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. The browser demo is live at https://gim1203-hue.github.io/khanu-learning/. Persistent production data and full backend hosting are not configured; they require a hosted API and MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
