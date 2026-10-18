@@ -1,0 +1,35 @@
+This is a subfolder of the project below. Services belong to that project, not necessarily this subfolder.
+Folder: C:\Users\muham\OneDrive\Desktop\React Project Builder — Master AI Prompt\Khanu-Learning-Complete\docs
+
+WEBSITE AND CONNECTED SERVICES
+Checked: October 14, 2026
+Project: C:\Users\muham\OneDrive\Desktop\React Project Builder — Master AI Prompt\Khanu-Learning-Complete
+Status: Application source present; complete working website not verified
+Verification: entry files and local script/style references checked; this is not a guarantee that every feature, login, payment, API or backend works.
+
+Website view: not added; no ready static build or explicit hosted website link found.
+
+GITHUB AND REPOSITORIES
+GitHub configured as a Git remote (remote existence/access not checked):
+https://github.com/gim1203-hue/khanu-learning.git
+All configured Git remotes:
+https://github.com/gim1203-hue/khanu-learning.git
+
+HOSTED WEBSITE / DOMAIN LINKS
+No explicit primary hosted URL verified.
+
+SERVICES REFERENCED / CONFIGURED
+These are local evidence, not proof of an active paid account or an active integration. References may be supporting resources or outbound links.
+MongoDB — evidence: .env, .env.example, AI_AND_TESTING.md, API_REFERENCE.md, BUILD_GUIDE.md, DEPLOYMENT.md
+GitHub Pages — evidence: .github\workflows\pages.yml, DEPLOYMENT.md, docs\DEPLOYMENT.md, scripts\build-pages.mjs
+
+URLS / DOMAINS REFERENCED IN PROJECT
+Listed with source file. This includes API/CDN/hosting links and ordinary outbound references; it does not mean each domain hosts this website. URL queries and credentials are omitted.
+http://127.0.0.1:5173/ — .env, .env.example, BUILD_GUIDE.md
+http://127.0.0.1:11435/ — .env, .env.example
+https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages — DEPLOYMENT.md, docs\DEPLOYMENT.md
+https://docs.github.com/en/get-started/start-your-journey/deploying-your-website-automatically — DEPLOYMENT.md, docs\DEPLOYMENT.md
+https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages — DEPLOYMENT.md, docs\DEPLOYMENT.md
+
+LIMITS
+Checked existing readable text source, documentation, configuration, shortcuts and local Git configuration. Secrets are not included. Archived ZIPs, account dashboards, DNS ownership, service billing and unpublished account connections were not inspected. No files were installed, built, edited, moved or deleted in the project.

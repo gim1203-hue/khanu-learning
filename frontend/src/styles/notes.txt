@@ -1,0 +1,30 @@
+This is a subfolder of the project below. Services belong to that project, not necessarily this subfolder.
+Folder: C:\Users\muham\OneDrive\Desktop\React Project Builder — Master AI Prompt\Khanu-Learning-Complete\frontend\src\styles
+
+WEBSITE AND CONNECTED SERVICES
+Checked: October 14, 2026
+Project: C:\Users\muham\OneDrive\Desktop\React Project Builder — Master AI Prompt\Khanu-Learning-Complete\frontend
+Status: Application source present; complete working website not verified
+Verification: entry files and local script/style references checked; this is not a guarantee that every feature, login, payment, API or backend works.
+
+Website view: not added; no ready static build or explicit hosted website link found.
+
+GITHUB AND REPOSITORIES
+GitHub remote: not found in this project. This does not prove it is absent from GitHub.
+
+HOSTED WEBSITE / DOMAIN LINKS
+No explicit primary hosted URL verified.
+
+SERVICES REFERENCED / CONFIGURED
+These are local evidence, not proof of an active paid account or an active integration. References may be supporting resources or outbound links.
+Google Fonts — evidence: index.html, src\styles\app.css
+MongoDB — evidence: src\App.jsx
+
+URLS / DOMAINS REFERENCED IN PROJECT
+Listed with source file. This includes API/CDN/hosting links and ordinary outbound references; it does not mean each domain hosts this website. URL queries and credentials are omitted.
+https://fonts.googleapis.com/ — index.html, index.html
+https://fonts.googleapis.com/css2 — index.html, src\styles\app.css
+http://127.0.0.1:5000/ — vite.config.js
+
+LIMITS
+Checked existing readable text source, documentation, configuration, shortcuts and local Git configuration. Secrets are not included. Archived ZIPs, account dashboards, DNS ownership, service billing and unpublished account connections were not inspected. No files were installed, built, edited, moved or deleted in the project.
