@@ -64,6 +64,8 @@ AI assistance helped scaffold/review code, draft documentation, diagnose deploym
 
 ## Guides
 
+- [Copyable capstone documentation](CAPSTONE_DOCUMENTATION.md)
+
 - [Requirements and user stories](docs/PROJECT.md)
 - [Wireframe and architecture](docs/DESIGN.md)
 - [Source map](docs/PROJECT_MAP.md)
