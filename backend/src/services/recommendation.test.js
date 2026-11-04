@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { catalog } from '../data.js';
-import { scoreRecommendations } from './recommendation.js';
+import { scoreRecommendations, tutorMatch } from './recommendation.js';
 
 test('recommendation ranks the requested subject and respects budget', () => {
   const result = scoreRecommendations(catalog, { goal: 'I need help solving equations', subject: 'algebra', level: 'Middle school', budget: 50 });
@@ -13,4 +13,62 @@ test('recommendation always returns up to three useful options for a broad reque
   const result = scoreRecommendations(catalog, { goal: 'I want to learn something new' });
   assert.equal(result.length, 3);
   assert.ok(result.every(({ reasons }) => reasons.length));
+});
+
+const prefs = { goal: 'Help with equations', subject: 'algebra', level: 'Middle school', budget: 50 };
+const config = { baseUrl: 'https://ai.example.test/v1', model: 'test-model', apiKey: 'test-secret', hosted: true };
+test('hosted model explains ranked choices and keeps credentials private', async () => {
+  const result = await tutorMatch(catalog, prefs, config, async (url, options) => {
+    assert.equal(url, config.baseUrl + '/chat/completions');
+    assert.equal(options.headers.authorization, 'Bearer test-secret');
+    const body = JSON.parse(options.body);
+    assert.equal(body.model, config.model);
+    assert.equal(body.max_completion_tokens, 240);
+    assert.equal(JSON.parse(body.messages[1].content).ranked_options[0].title, 'Algebra Foundations');
+    assert.equal(options.body.includes(config.apiKey), false);
+    return { ok: true, json: async () => ({ choices: [{ message: { content: 'Algebra Foundations fits your level and budget.' } }] }) };
+  });
+  assert.equal(result.ai.status, 'generated');
+  assert.equal(result.matches[0].service.slug, 'algebra-foundations');
+  assert.equal(JSON.stringify(result).includes(config.apiKey), false);
+});
+test('provider failure, quota limits, and invalid output use explicit fallback', async () => {
+  for (const fetchImpl of [
+    async () => { throw new Error('private provider error'); },
+    async () => ({ ok: false, status: 429 }),
+    async () => ({ ok: false, status: 401 }),
+    async () => ({ ok: true, json: async () => ({ choices: [] }) }),
+    async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: ' ' } }] }) }),
+    async () => ({ ok: true, json: async () => { throw new Error('bad JSON'); } }),
+  ]) {
+    const result = await tutorMatch(catalog, prefs, config, fetchImpl);
+    assert.equal(result.ai.status, 'fallback');
+    assert.equal(result.matches[0].service.slug, 'algebra-foundations');
+    assert.equal(JSON.stringify(result).includes('private provider error'), false);
+  }
+});
+test('incomplete or insecure hosted configuration makes no request', async () => {
+  for (const settings of [{ ...config, apiKey: '' }, { ...config, model: '' }, { ...config, baseUrl: 'http://ai.example.test/v1' }]) {
+    const result = await tutorMatch(catalog, prefs, settings, () => assert.fail('unexpected request'));
+    assert.equal(result.ai.status, 'fallback');
+  }
+});
+test('local model discovery remains available', async () => {
+  const result = await tutorMatch(catalog, prefs, 'http://127.0.0.1:11435', async (url, options) => {
+    if (url.endsWith('/models')) return { ok: true, json: async () => ({ data: [{ id: 'local-model' }] }) };
+    assert.equal(JSON.parse(options.body).max_tokens, 240);
+    return { ok: true, json: async () => ({ choices: [{ message: { content: 'Start with Algebra Foundations.' } }] }) };
+  });
+  assert.equal(result.ai.status, 'generated');
+  assert.equal(result.poweredBy, 'Khanu local AI + smart matching');
+});
+
+test('Gemini reserves reasoning tokens and uses low reasoning effort', async () => {
+  const result = await tutorMatch(catalog, prefs, { ...config, baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', model: 'gemini-3.8-flash' }, async (url, options) => {
+    const body = JSON.parse(options.body);
+    assert.equal(body.reasoning_effort, 'low');
+    assert.equal(body.max_completion_tokens, 4096);
+    return { ok: true, json: async () => ({ choices: [{ message: { content: 'Algebra Foundations fits your goal.' } }] }) };
+  });
+  assert.equal(result.ai.status, 'generated');
 });

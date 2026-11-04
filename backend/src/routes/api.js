@@ -8,8 +8,9 @@ import { requireAuth } from '../middleware/auth.js';
 import { useDatabase } from '../data.js';
 
 const router = Router();
+const aiLimiter = rateLimit({ windowMs: 60 * 1000, limit: 10, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'Please wait a minute before requesting more recommendations.' } });
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 25, standardHeaders: 'draft-8', legacyHeaders: false });
-router.get('/health', (_req, res) => res.json({ ok: true, app: 'Khanu', database: useDatabase() ? 'mongodb' : 'demo-memory', ai: 'local model optional; ranker always ready' }));
+router.get('/health', (_req, res) => res.json({ ok: true, app: 'Khanu', database: useDatabase() ? 'mongodb' : 'demo-memory', ai: process.env.AI_BASE_URL ? 'hosted model configured; verify with a recommendation' : 'local model optional; ranker always ready' }));
 router.post('/auth/register', authLimiter, register);
 router.post('/auth/login', authLimiter, login);
 router.get('/auth/me', requireAuth, me);
@@ -17,5 +18,5 @@ router.get('/services', getServices);
 router.get('/bookings', requireAuth, listBookings);
 router.post('/bookings', requireAuth, createBooking);
 router.patch('/bookings/:id/cancel', requireAuth, cancelBooking);
-router.post('/ai/recommend', recommend);
+router.post('/ai/recommend', aiLimiter, recommend);
 export default router;

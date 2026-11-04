@@ -1,3 +1,5 @@
+> AI integration update: the backend now supports a hosted model through AI_BASE_URL, AI_MODEL, and AI_API_KEY. In hosted mode, learner preferences and catalog choices leave the server for that provider; older local-only statements below describe local mode only. Read [AI setup](AI_SETUP.md) for current configuration, privacy boundaries, and live acceptance checks. Hosted AI is not verified until a response reports ai.status = generated.
+
 # AI feature and validation plan
 
 ## AI-powered tutor matching

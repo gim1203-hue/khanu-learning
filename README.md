@@ -64,3 +64,7 @@ This project demonstrates a sample tutoring catalog: **Algebra Foundations**, **
 ## Current completion status
 
 The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. Public deployment and persistent production data are not configured: they require a GitHub repository and (for the full backend) a hosted API plus MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
+
+## Hosted AI explanation
+
+The recommendation service supports a server-configured compatible language model. Set AI_BASE_URL, AI_MODEL, and AI_API_KEY on the backend host and verify a generated response. Without a working model, recommendations remain explicitly labeled catalog-scoring results. In hosted mode, preferences and catalog choices are sent to the configured provider. See [AI setup and live acceptance checks](docs/AI_SETUP.md).
