@@ -72,3 +72,13 @@ test('Gemini reserves reasoning tokens and uses low reasoning effort', async () 
   });
   assert.equal(result.ai.status, 'generated');
 });
+
+
+test('provider diagnostics expose only a safe category and status', async () => {
+  for (const [status, reason] of [[400, 'invalid_provider_request'], [401, 'authentication_or_permissions'], [403, 'authentication_or_permissions'], [404, 'model_or_endpoint_not_found'], [429, 'quota_or_rate_limit'], [503, 'provider_unavailable']]) {
+    const result = await tutorMatch(catalog, prefs, config, async () => ({ ok: false, status, json: async () => ({ error: { message: 'secret-key-and-private-input' } }) }));
+    assert.equal(result.ai.reason, reason);
+    assert.equal(result.ai.providerStatus, status);
+    assert.equal(JSON.stringify(result).includes('secret-key-and-private-input'), false);
+  }
+});

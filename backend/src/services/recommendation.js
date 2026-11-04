@@ -43,13 +43,14 @@ export async function tutorMatch(services, preferences, configuration, fetchImpl
     matches, poweredBy: 'Khanu smart matching',
     ai: { status: 'fallback', message: 'AI explanation is unavailable. These results use catalog scoring.' },
   };
+  const fail = (reason, providerStatus) => ({ ...fallback, ai: { ...fallback.ai, reason, ...(providerStatus ? { providerStatus } : {}) } });
   if (!matches.length) return { ...fallback, reply: 'No sessions are available to recommend right now.' };
   try {
     const baseUrl = config.baseUrl.replace(/\/$/, '');
     const parsedUrl = new URL(baseUrl);
-    if (!['http:', 'https:'].includes(parsedUrl.protocol) || parsedUrl.username || parsedUrl.password) return fallback;
+    if (!['http:', 'https:'].includes(parsedUrl.protocol) || parsedUrl.username || parsedUrl.password) return fail('configuration');
     // Hosted credentials must only travel over HTTPS. Local development may use HTTP.
-    if (config.hosted && (parsedUrl.protocol !== 'https:' || !config.model || !config.apiKey)) return fallback;
+    if (config.hosted && (parsedUrl.protocol !== 'https:' || !config.model || !config.apiKey)) return fail('configuration');
     const headers = { 'content-type': 'application/json' };
     if (config.apiKey) headers.authorization = `Bearer ${config.apiKey}`;
     let model = config.model;
@@ -66,13 +67,24 @@ export async function tutorMatch(services, preferences, configuration, fetchImpl
         { role: 'user', content: JSON.stringify({ learner_preferences: preferences, ranked_options: matches.map(({ service, reasons }) => ({ title: service.title, description: service.description, tutor: service.tutor, price: service.price, level: service.level, reasons })) }) },
       ] }),
     });
-    if (!response.ok) return fallback;
+    if (!response.ok) {
+      // Classify provider failures without returning raw messages or any credentials.
+      const error = await response.json().catch(() => ({}));
+      const description = String(error?.error?.message || '').toLowerCase();
+      const keyInvalid = /api.key.not.valid|api.key.invalid|invalid.api.key/.test(description);
+      const reason = keyInvalid || [401, 403].includes(response.status) ? 'authentication_or_permissions'
+        : response.status === 429 ? 'quota_or_rate_limit'
+        : response.status === 404 ? 'model_or_endpoint_not_found'
+        : response.status === 400 ? 'invalid_provider_request'
+        : 'provider_unavailable';
+      return fail(reason, response.status);
+    }
     const data = await response.json();
     const generated = data?.choices?.[0]?.message?.content;
-    if (typeof generated !== 'string' || !generated.trim() || generated.length > 2000) return fallback;
+    if (typeof generated !== 'string' || !generated.trim() || generated.length > 2000) return fail('empty_or_invalid_model_output');
     return { reply: generated.trim(), matches, poweredBy: config.hosted ? 'Khanu AI + smart matching' : 'Khanu local AI + smart matching', ai: { status: 'generated', model } };
-  } catch {
+  } catch (error) {
     // Never include provider errors, credentials, or learner goals in public errors/logs.
-    return fallback;
+    return fail(error?.name === 'TimeoutError' || error?.name === 'AbortError' ? 'timeout' : 'connection_or_response_error');
   }
 }
