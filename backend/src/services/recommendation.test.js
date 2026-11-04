@@ -63,16 +63,24 @@ test('local model discovery remains available', async () => {
   assert.equal(result.poweredBy, 'Khanu local AI + smart matching');
 });
 
-test('Gemini reserves reasoning tokens and uses low reasoning effort', async () => {
+test('Gemini native interactions excludes thoughts and keeps the key server-side', async () => {
   const result = await tutorMatch(catalog, prefs, { ...config, baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', model: 'gemini-3.8-flash' }, async (url, options) => {
+    assert.equal(url, 'https://generativelanguage.googleapis.com/v1beta/interactions');
+    assert.equal(options.headers['x-goog-api-key'], config.apiKey);
     const body = JSON.parse(options.body);
-    assert.equal(body.reasoning_effort, 'low');
-    assert.equal(body.max_completion_tokens, 4096);
-    return { ok: true, json: async () => ({ choices: [{ message: { content: 'Algebra Foundations fits your goal.' } }] }) };
+    assert.equal(body.generation_config.thinking_level, 'low');
+    assert.equal(body.generation_config.max_output_tokens, 4096);
+    assert.equal(body.store, false);
+    assert.equal(body.model, 'gemini-3.8-flash');
+    assert.equal(JSON.parse(body.input).ranked_options[0].title, 'Algebra Foundations');
+    return { ok: true, json: async () => ({ status: 'completed', steps: [
+      { type: 'thought', content: [{ type: 'text', text: 'INTERNAL REASONING' }] },
+      { type: 'model_output', content: [{ type: 'text', text: 'Algebra Foundations fits your goal.' }] },
+    ] }) };
   });
   assert.equal(result.ai.status, 'generated');
+  assert.equal(result.reply, 'Algebra Foundations fits your goal.');
 });
-
 
 test('provider diagnostics expose only a safe category and status', async () => {
   for (const [status, reason] of [[400, 'invalid_provider_request'], [401, 'authentication_or_permissions'], [403, 'authentication_or_permissions'], [404, 'model_or_endpoint_not_found'], [429, 'quota_or_rate_limit'], [503, 'provider_unavailable']]) {

@@ -36,3 +36,7 @@ The key stays in backend environment variables. Requests time out, redirects are
 "Khanu combines catalog scoring with an AI-generated recommendation explanation. The server provides real catalog choices and the learner preferences to a language model, which explains the top recommendation within the discovery workflow. If the provider is unavailable, a visibly labeled deterministic fallback keeps browsing and booking usable."
 
 Only describe the deployed feature as model-powered after the live acceptance checks pass. Local automated provider tests use simulated responses; they do not prove a real API key or hosted model is working.
+
+## Gemini native API
+
+Google endpoints are detected by hostname and use the native /v1beta/interactions API with x-goog-api-key authentication. Existing AI_BASE_URL values ending in /v1beta/openai remain supported without configuration changes. The request disables interaction storage (store=false), uses low thinking, and reads only model_output text; internal thoughts are not shown. Google Search is not enabled because explanations use the supplied tutoring catalog. Other compatible providers continue using chat completions.
