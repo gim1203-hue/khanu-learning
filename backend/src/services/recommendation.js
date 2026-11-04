@@ -98,7 +98,7 @@ export async function tutorMatch(services, preferences, configuration, fetchImpl
       generation_config: { max_output_tokens: 4096, thinking_level: 'low' },
     } : chatRequest;
     const response = await requestWithRetry(endpoint, {
-      method: 'POST', headers: requestHeaders, signal: AbortSignal.timeout(20000), redirect: 'error',
+      method: 'POST', headers: requestHeaders, signal: AbortSignal.timeout(gemini ? 45000 : 20000), redirect: 'error',
       body: JSON.stringify(requestBody),
     }, fetchImpl);
     if (!response.ok) {
