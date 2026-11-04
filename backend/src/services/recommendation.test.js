@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { catalog } from '../data.js';
-import { scoreRecommendations, tutorMatch } from './recommendation.js';
+import { scoreRecommendations, tutorMatch, sanitizedProviderMessage } from './recommendation.js';
 
 test('recommendation ranks the requested subject and respects budget', () => {
   const result = scoreRecommendations(catalog, { goal: 'I need help solving equations', subject: 'algebra', level: 'Middle school', budget: 50 });
@@ -89,4 +89,13 @@ test('provider diagnostics expose only a safe category and status', async () => 
     assert.equal(result.ai.providerStatus, status);
     assert.equal(JSON.stringify(result).includes('secret-key-and-private-input'), false);
   }
+});
+
+test('server diagnostics redact keys and learner input and limit log size', () => {
+  const output = sanitizedProviderMessage('secret-key learner goal AIzaExampleKey123\nUnavailable', 'secret-key', { goal: 'learner goal' });
+  assert.equal(output.includes('secret-key'), false);
+  assert.equal(output.includes('learner goal'), false);
+  assert.equal(output.includes('AIza'), false);
+  assert.equal(output.includes('\n'), false);
+  assert.ok(sanitizedProviderMessage('x'.repeat(1000), '').length <= 600);
 });

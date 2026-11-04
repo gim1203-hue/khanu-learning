@@ -21,6 +21,18 @@ export function scoreRecommendations(services, { goal = '', subject = '', level 
   }).sort((a, b) => b.score - a.score || b.service.rating - a.service.rating).slice(0, 3);
 }
 
+// Keep provider diagnostics in private server logs, never in the public response.
+export function sanitizedProviderMessage(message, apiKey, preferences = {}) {
+  let safe = String(message || 'No provider message supplied.');
+  const privateValues = [apiKey, ...Object.values(preferences).filter((v) => typeof v === 'string' && v.length > 0)];
+  for (const value of privateValues.filter(Boolean).sort((a, b) => b.length - a.length)) {
+    safe = safe.split(value).join('[redacted]');
+    const escaped = JSON.stringify(value).slice(1, -1);
+    safe = safe.split(escaped).join('[redacted]');
+  }
+  return safe.replace(/AIza[\w-]+|Bearer\s+\S+/gi, '[redacted]').replace(/[\r\n\t]/g, ' ').slice(0, 600);
+}
+
 // Read configuration at request time so dotenv and test settings are respected.
 export function aiConfiguration() {
   const hosted = Boolean(process.env.AI_BASE_URL);
@@ -82,6 +94,7 @@ export async function tutorMatch(services, preferences, configuration, fetchImpl
     if (!response.ok) {
       // Classify provider failures without returning raw messages or any credentials.
       const error = await response.json().catch(() => ({}));
+      console.warn('Khanu AI provider error', JSON.stringify({ httpStatus: response.status, message: sanitizedProviderMessage(error?.error?.message, config.apiKey, preferences) }));
       const description = String(error?.error?.message || '').toLowerCase();
       const keyInvalid = /api.key.not.valid|api.key.invalid|invalid.api.key/.test(description);
       const reason = keyInvalid || [401, 403].includes(response.status) ? 'authentication_or_permissions'
