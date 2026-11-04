@@ -114,3 +114,12 @@ test('transient outage retries once and recovers; client failures are not retrie
     assert.equal(calls, 1);
   }
 });
+
+test('an empty budget and level are sent to the model as unspecified', async () => {
+  await tutorMatch(catalog, { goal: 'Algebra', budget: '', level: '' }, config, async (url, options) => {
+    const input = JSON.parse(JSON.parse(options.body).messages[1].content);
+    assert.equal(input.learner_preferences.budget, null);
+    assert.equal(input.learner_preferences.level, null);
+    return { ok: true, json: async () => ({ choices: [{ message: { content: 'Algebra Foundations matches your goal.' } }] }) };
+  });
+});
