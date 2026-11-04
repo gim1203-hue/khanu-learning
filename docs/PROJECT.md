@@ -1,4 +1,4 @@
-#Project overview and requirements
+# Project overview and requirements
 
 ## Problem and audience
 
@@ -25,7 +25,7 @@ The full-stack capstone includes account creation and sign-in, a searchable serv
 2. Authenticate with a signed token; hash passwords; protect account and booking endpoints.
 3. Browse, search, and category-filter tutoring services and view price, level, duration, tutor, rating, and description.
 4. Create an appointment for a future date, view the current user's bookings, and cancel an upcoming booking.
-5. Recommend up to three catalog entries based on learner goal, subject, level, and budget, with readable match reasons. Use the optional local language model for an explanation when available.
+5. Recommend up to three catalog entries based on learner goal, subject, level, and budget, with readable match reasons. Use Google Gemini to explain the top catalog choice, with visibly labeled fallback scoring.
 6. Validate request data, return useful API errors, and keep each user limited to their own bookings.
 7. Persist records in MongoDB when configured; provide clearly identified in-memory and browser-local demo modes otherwise.
 
@@ -34,7 +34,7 @@ The full-stack capstone includes account creation and sign-in, a searchable serv
 - Responsive pages usable at phone, tablet, and desktop widths.
 - Separate React presentation code, Express routes/controllers, Mongoose schemas, and recommendation logic.
 - Password hashing, JWT authorization, security headers, basic authentication rate limiting, input validation, and environment-based secrets.
-- Local-first AI: the deterministic matcher runs on the local Express server or in the Pages browser. The optional language model uses a configured local model endpoint; the project does not call a hosted AI provider.
+- Hosted AI: Express ranks the catalog and sends preferences and ranked choices to Google Gemini for an explanation. Browser-demo matching remains local.
 - Usable without MongoDB for a review session, with an explicit warning that demo data does not persist.
 - Production build served from the Express process and configured to bind to the hosting provider's port; a separate Vite build targets static Pages.
 
@@ -46,3 +46,11 @@ The full-stack capstone includes account creation and sign-in, a searchable serv
 - The discovery filters and AI match controls work at mobile and desktop sizes.
 - A MongoDB connection stores users, seeded services, and bookings; fallback demo mode is clearly signposted.
 - The Pages demo can rank recommendations, create a browser-only profile, book and cancel a sample appointment, and retain those demo records in browser local storage.
+
+## Project links
+
+- Main application: https://khanu-learning.onrender.com/
+- GitHub Pages frontend: https://gim1203-hue.github.io/khanu-learning/
+- Source repository: https://github.com/gim1203-hue/khanu-learning
+- API health: https://khanu-learning.onrender.com/api/health
+- Service catalog: https://khanu-learning.onrender.com/api/services

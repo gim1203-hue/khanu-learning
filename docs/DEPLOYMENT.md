@@ -1,48 +1,39 @@
-# GitHub Pages and full-stack deployment
+# Deployment
 
-## Choose a deployment mode
+## Project links
 
-GitHub Pages publishes static website files. The supplied `.github/workflows/pages.yml` builds and deploys Khanu's React frontend. When `VITE_API_BASE_URL` is empty, it enables the browser demo: service search and matching work in the browser, and demo profiles/bookings are kept in local storage. This edition does not run Express, MongoDB, the optional local model server, or secure server accounts.
+- Main application: https://khanu-learning.onrender.com/
+- GitHub Pages frontend: https://gim1203-hue.github.io/khanu-learning/
+- Source repository: https://github.com/gim1203-hue/khanu-learning
+- API health: https://khanu-learning.onrender.com/api/health
+- Service catalog: https://khanu-learning.onrender.com/api/services
 
-For real accounts and persistent shared booking records, deploy the Express backend and MongoDB on a separate host. GitHub Pages remains the frontend. A public backend should be configured with HTTPS and restricted production secrets.
+## Current hosting
 
-## Publish the browser-demo edition
+Render serves React and Express together with MongoDB connected. Gemini explanations have succeeded live but remain intermittent. GitHub Actions publishes an additional Pages frontend. The source branch is main.
 
-1. Open the `local-assistant` folder in VS Code.
-2. Create a GitHub repository for the project. Do not include `.env`, `node_modules`, model weights, or runtime files; `.gitignore` excludes those local items.
-3. Push the project source to the repository's `main` or `master` branch. The workflow deploys on pushes to those branches and can also be run manually from **Actions**.
-4. In GitHub repository **Settings → Pages**, choose **GitHub Actions** as the build and deployment source.
-5. Open the **Actions** tab and wait for “Build and publish Khanu to GitHub Pages” to succeed. GitHub reports the published URL in the `github-pages` environment and Pages settings.
-6. Open that URL on desktop and mobile; try search, theme/color controls, a recommendation, demo profile, booking, refresh, and cancellation.
+Render build command: npm ci && npm run build. Start command: npm start. Use Node.js 20 or newer and the host-supplied PORT. Production Express binds to 0.0.0.0.
 
-`npm run build:pages` sets the Vite base path from `GITHUB_REPOSITORY`, including the repository subpath used by project Pages sites. For an owner site named `<owner>.github.io`, it uses `/`.
+## Environment settings
 
-## Connect a separately deployed backend (optional)
+| Variable | Purpose or public value |
+|---|---|
+| NODE_ENV | production |
+| CLIENT_URL | https://gim1203-hue.github.io |
+| MONGODB_URI | Private MongoDB URI |
+| JWT_SECRET | Private random secret of at least 32 characters |
+| AI_BASE_URL | https://generativelanguage.googleapis.com/v1beta/openai |
+| AI_MODEL | gemini-3.5-flash-lite |
+| AI_API_KEY | Private Google AI Studio key |
 
-1. Deploy the Node/Express app from this repository or an API-only copy to a Node web host. Configure its start command as `npm start`; configure Node 20+, `NODE_ENV=production`, `MONGODB_URI`, and a unique long `JWT_SECRET` using the host's private environment settings. Do not publish those values.
-2. Set `CLIENT_URL` to the exact GitHub Pages origin (for example, `https://<owner>.github.io`) if cross-origin requests need restriction. Use the API host's HTTPS origin.
-3. In GitHub repository **Settings → Secrets and variables → Actions → Variables**, add `VITE_API_BASE_URL` with that HTTPS backend origin. This value is public and contains no secret.
-4. Re-run the Pages workflow. The build sees `VITE_API_BASE_URL` and uses the API for accounts, bookings, catalog, and matching. A backend's CORS policy must allow the Pages origin.
-5. Verify registration, login, ownership, future booking, cancellation, Mongo persistence after an API restart, and mobile layout. Use a dedicated test database and test-only account data.
+Google's hostname selects native /v1beta/interactions, even with the compatible-looking base URL above. LOCAL_AI_URL is optional for a model reachable from the backend host; Render cannot reach a laptop through localhost.
 
-The optional local model is designed for a local machine. A cloud API deployment cannot reach a user's `127.0.0.1`. Leave the model disabled for a hosted API or intentionally configure an approved server-side model service; keep any model credentials server-only. Deterministic recommendations remain available without an LLM.
+## GitHub Pages
 
-## Local commands
+Repository Settings > Pages uses GitHub Actions. The workflow uses the public Render origin as the default VITE_API_BASE_URL; a repository variable can override it. Its base path is /khanu-learning/. Builds without any API origin support an explicitly labeled browser demo. Publishing Pages does not itself update Render.
 
-```text
-npm ci
-npm test
-npm run build:pages
-```
+## Release checks
 
-For combined local frontend/API development use `npm run dev`; for a single local process use `npm run build` and `npm start`.
+Run npm test, npm run build, and npm run build:pages. Commit no credentials or generated bundles. Push main and check the latest Live Render commit and Pages workflow. Check health, catalog, account/booking flows, ownership, actual generated AI output, mobile layout, and controlled database persistence across a restart.
 
-## Not yet completed
-
-No GitHub remote or public URL is embedded in this source copy. Publishing requires the project to be pushed to the specific repository and Pages enabled for it. Full-stack persistence additionally requires a hosted backend and MongoDB connection. Do not call the Pages browser demo production authentication.
-
-## Official GitHub guidance
-
-- [GitHub Pages is static hosting](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
-- [Automatic publishing with GitHub Actions](https://docs.github.com/en/get-started/start-your-journey/deploying-your-website-automatically).
-- [Custom workflows for Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+Do not repeatedly redeploy for provider overload. Inspect sanitized provider logs. A Google 503 or timeout leads to fallback. Render's free service may sleep. Roll back application regressions using the previous deployment if needed.

@@ -33,10 +33,10 @@ React + Vite (frontend/src)
         ▼
 Express (backend/src/routes → controllers → services)
         ├── Mongoose models → MongoDB
-        └── Khanu recommendation engine → optional local OpenAI-compatible model
+        └── Khanu recommendation engine → Google Gemini native Interactions API (optional local model in development)
 ```
 
-The frontend owns presentation and interaction state. Express validates requests, enforces authentication/ownership, and coordinates business operations. Mongoose defines persistent documents. The recommendation service ranks catalog items locally before asking an optional local model to phrase its top match. If that model is unavailable, the deterministic ranker still returns usable matches.
+The frontend owns presentation and interaction state. Express validates requests, enforces authentication/ownership, and coordinates business operations. Mongoose defines persistent documents. The recommendation service ranks catalog items locally before asking Google Gemini to explain its top match. If that model is unavailable, the deterministic ranker still returns usable matches.
 
 ## Static GitHub Pages edition
 
@@ -60,6 +60,14 @@ Passwords are stored as bcrypt hashes. Booking queries always filter by the sign
 
 ## Security and privacy
 
-The backend validates payloads with Zod, hashes passwords with bcrypt, signs expiring JWTs, rate-limits login and registration, sets HTTP security headers, and checks ownership for booking operations. Production must use a strong `JWT_SECRET`, HTTPS, MongoDB Atlas network restrictions, and a suitable secret manager. The AI feature calls only the configured local model URL. The demo fallback is volatile and clearly labeled.
+The backend validates payloads with Zod, hashes passwords with bcrypt, signs expiring JWTs, rate-limits login and registration, sets HTTP security headers, and checks ownership for booking operations. Production must use a strong `JWT_SECRET`, HTTPS, MongoDB Atlas network restrictions, and a suitable secret manager. Hosted AI sends learner preferences and catalog facts to Google Gemini; its key stays server-only. The demo fallback is volatile and clearly labeled.
 
 The Pages demo does not provide secure authentication or shared records. It deliberately asks for no email/password. Do not use it for real learner information. See [privacy and security boundaries](SECURITY_AND_PRIVACY.md).
+
+## Project links
+
+- Main application: https://khanu-learning.onrender.com/
+- GitHub Pages frontend: https://gim1203-hue.github.io/khanu-learning/
+- Source repository: https://github.com/gim1203-hue/khanu-learning
+- API health: https://khanu-learning.onrender.com/api/health
+- Service catalog: https://khanu-learning.onrender.com/api/services

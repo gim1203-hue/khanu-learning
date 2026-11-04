@@ -4,7 +4,7 @@ The local API base is `/api`. Requests and responses use JSON. Protected routes 
 
 | Method | Route | Access | Purpose |
 |---|---|---|---|
-| `GET` | `/health` | Public | Server, database mode, and local-AI status |
+| `GET` | `/health` | Public | Server, database mode, and AI configuration status (not generation health) |
 | `GET` | `/services` | Public | List sessions; optional `q` and `category` query filters |
 | `POST` | `/auth/register` | Public, rate-limited | Create user and return token/user |
 | `POST` | `/auth/login` | Public, rate-limited | Verify credentials and return token/user |
@@ -38,3 +38,11 @@ The result contains up to three `{ service, score, reasons }` entries, a short e
 ```
 
 The server checks that the service exists and the appointment is in the future. It snapshots the service title and tutor name. MongoDB mode stores the user relation as an ObjectId; demo mode uses temporary in-memory records. The browser Pages adapter is a separate local demo and does not call these account endpoints.
+
+## Project links
+
+- Main application: https://khanu-learning.onrender.com/
+- GitHub Pages frontend: https://gim1203-hue.github.io/khanu-learning/
+- Source repository: https://github.com/gim1203-hue/khanu-learning
+- API health: https://khanu-learning.onrender.com/api/health
+- Service catalog: https://khanu-learning.onrender.com/api/services

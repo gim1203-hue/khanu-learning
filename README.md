@@ -1,70 +1,75 @@
 # Khanu Learning
 
-Khanu Learning is a tutoring discovery and appointment-planning capstone. It helps learners compare focused lessons, describe what they need, see ranked suggestions with reasons, and save sessions to a learner dashboard. The animated Khanu robot is the study buddy and visual guide.
+Khanu Learning is an AI-assisted tutoring discovery and appointment-booking capstone. Learners browse six sample services, describe a learning goal, get ranked recommendations with an AI explanation, and manage their bookings.
 
-## What problem it solves
+## Project links
 
-Learners may know they are stuck but not know which tutor, subject area, level, price, or next step fits. Khanu puts the catalog, a goal-based matching tool, booking, and a simple learning plan in one responsive experience. It is a planning and discovery prototype; the sample tutors and sessions are demo catalog data, not a live marketplace.
+- Main application: https://khanu-learning.onrender.com/
+- GitHub Pages frontend: https://gim1203-hue.github.io/khanu-learning/
+- Source repository: https://github.com/gim1203-hue/khanu-learning
+- API health: https://khanu-learning.onrender.com/api/health
+- Service catalog: https://khanu-learning.onrender.com/api/services
 
-## Open in VS Code
+## Technology and features
 
-1. Open this project folder in VS Code: `outputs/local-assistant`.
-2. Install Node.js 20 or newer.
-3. In the VS Code terminal, run `npm ci`.
-4. Copy `.env.example` to `.env` if you want to configure the backend. Set a long random `JWT_SECRET`; add `MONGODB_URI` to persist user and booking records.
-5. Run `npm run dev` and open `http://127.0.0.1:5173`.
+React 19 and Vite provide the presentation layer. Node.js and Express 5 handle REST APIs, validation, and authorization. MongoDB with Mongoose stores users, services, and bookings. Google Gemini generates explanations through native Interactions. Render serves the frontend and API together; GitHub Pages is an additional frontend.
 
-On Windows, `Start Assistant.bat` can install/build when needed and launch the local app. Use `npm run dev` while editing; use `npm run build` then `npm start` to preview the production build.
+- Catalog search, category filters, tutor details, durations, and prices.
+- Registration, login/logout, bcrypt password hashing, JWT authentication, and protected actions.
+- Future appointments, My Sessions dashboard, cancellation, and ownership checks.
+- Goal/subject/level/budget ranking with Gemini explanations and visibly labeled fallback.
+- Responsive layout, light/dark theme, and animated robot personalization.
 
-## GitHub Pages
+## Run in VS Code
 
-The project includes a GitHub Actions workflow at `.github/workflows/pages.yml`. Push this folder to a GitHub repository on `main` or `master`, then in **Settings → Pages**, set the publishing source to **GitHub Actions**. The workflow builds and publishes the static frontend after each push.
+Open the Khanu-Learning-Complete repository folder and install Node.js 20 or newer.
 
-With no backend URL configured, the deployed Pages edition uses an explicitly labeled browser demo. Matching runs in the browser and demo profiles/bookings are stored in that browser's local storage. Do not enter a real password or sensitive student information into this demo. GitHub Pages cannot run Express, MongoDB, or the local model process. For real accounts and records, deploy the Express backend and MongoDB separately, then set the repository variable `VITE_API_BASE_URL` to the HTTPS backend origin. See [GitHub Pages and full-stack deployment](docs/DEPLOYMENT.md).
+```sh
+npm ci
+```
 
-The GitHub workflow assumes `main` or `master`; change its branch list if your repository uses another default branch. The build script sets the correct Vite base path for project pages and owner pages.
+Copy .env.example to ignored .env. Set a strong JWT_SECRET and reachable MONGODB_URI. Hosted AI uses server-only AI_BASE_URL, AI_MODEL, and AI_API_KEY. Never commit private values.
 
-## Features
+```sh
+npm run dev
+```
 
-- Responsive tutoring catalog with search and subject filters.
-- Khanu animated live-view robot, color palette, and light/dark theme.
-- Goal, subject, school level, and budget-aware tutor recommendations with explanations.
-- Protected registration/sign-in, booking, learner dashboard, and cancellation in the Express version.
-- Mongoose models and MongoDB persistence when `MONGODB_URI` is configured; clear in-memory fallback for local evaluation.
-- Browser-only Pages demo for the static GitHub Pages edition.
-- Optional local OpenAI-compatible language-model explanation. The deterministic matcher works without a model.
+This starts Vite at http://127.0.0.1:5173 and the development API on port 5000. Separate commands are npm run dev:web and npm run dev:api.
 
-## Project services
+```sh
+npm test
+npm run build
+npm start
+```
 
-This project demonstrates a sample tutoring catalog: **Algebra Foundations**, **SAT Math Boost**, **Essay Writing Workshop**, **Chemistry, Made Clear**, **Spanish Conversation Club**, and **College Application Coaching**. There are no live tutor accounts, payments, calendar integrations, or video sessions. See [Project overview](docs/PROJECT.md) and [User guide](docs/USER_GUIDE.md).
+Production-like local URL: http://127.0.0.1:4173. npm run build:pages builds the Pages frontend. Use npm scripts; this repository does not include Start Assistant.bat.
 
-## Commands
+## Deployment and environment
 
-| Command | Purpose |
-|---|---|
-| `npm ci` | Install the exact locked dependency versions |
-| `npm run dev` | Run Vite and the Express API for local development |
-| `npm test` | Run API, matcher, and browser-demo tests |
-| `npm run build` | Build the full-stack local frontend |
-| `npm run build:pages` | Build a GitHub Pages static edition with a repository-aware base path |
-| `npm start` | Serve the production frontend and Express API together |
+The main Render application is deployed with MongoDB and Gemini. Current verified model: gemini-3.5-flash-lite. Provider keys belong in Render Environment. Pages uses VITE_API_BASE_URL=https://khanu-learning.onrender.com; only builds without an API URL use the browser-local demo.
 
-## Documentation
+Render needs NODE_ENV=production, MONGODB_URI, JWT_SECRET, and CLIENT_URL=https://gim1203-hue.github.io. It supplies PORT. VITE_* values are public browser configuration and must never contain secrets. See [deployment](docs/DEPLOYMENT.md) and [AI setup](docs/AI_SETUP.md).
 
-- [Project purpose, requirements, and boundaries](docs/PROJECT.md)
-- [Design, architecture, and data model](docs/DESIGN.md)
-- [Complete file and component guide](docs/PROJECT_MAP.md)
-- [How to use Khanu](docs/USER_GUIDE.md)
+## Verification and limits
+
+As of November 4, 2026, live API checks passed registration, login, catalog filtering, protected access, booking/cancellation, and cross-account isolation. MongoDB connectivity is confirmed. User-provided screenshots demonstrate generated explanations and corrected blank-budget behavior. The automated suite has 15 passing tests.
+
+AI remains intermittent: Google has returned high-demand 503 errors and timeouts. Requests are bounded and temporary server errors are retried once, then clearly labeled fallback keeps the catalog usable. Render's free instance may sleep. Controlled restart persistence, broader devices, and a full browser-driven account flow remain verification checks.
+
+Tutor identities, prices, ratings, and availability are demonstration data. Bookings are prototype planning records. Payments, real lessons, tutor verification, calendar sync, and notifications are outside scope.
+
+## AI development disclosure
+
+AI assistance helped scaffold/review code, draft documentation, diagnose deployment, and create tests. The developer remains responsible for understanding and validating the source and model output. Simulated provider tests do not prove live reliability.
+
+## Guides
+
+- [Requirements and user stories](docs/PROJECT.md)
+- [Wireframe and architecture](docs/DESIGN.md)
+- [Source map](docs/PROJECT_MAP.md)
+- [User guide](docs/USER_GUIDE.md)
 - [API reference](docs/API_REFERENCE.md)
-- [AI design and test plan](docs/AI_AND_TESTING.md)
-- [Build and VS Code guide](docs/BUILD_GUIDE.md)
-- [GitHub Pages and full-stack deployment](docs/DEPLOYMENT.md)
-- [Privacy and security boundaries](docs/SECURITY_AND_PRIVACY.md)
-
-## Current completion status
-
-The source, local experience, browser demo, automated tests, production build, Pages workflow, and project documentation are included. Public deployment and persistent production data are not configured: they require a GitHub repository and (for the full backend) a hosted API plus MongoDB connection. Never commit `.env`, model files, passwords, or API keys.
-
-## Hosted AI explanation
-
-The recommendation service supports a server-configured compatible language model. Set AI_BASE_URL, AI_MODEL, and AI_API_KEY on the backend host and verify a generated response. Without a working model, recommendations remain explicitly labeled catalog-scoring results. In hosted mode, preferences and catalog choices are sent to the configured provider. See [AI setup and live acceptance checks](docs/AI_SETUP.md).
+- [AI design and testing](docs/AI_AND_TESTING.md)
+- [Build guide](docs/BUILD_GUIDE.md)
+- [Security and privacy](docs/SECURITY_AND_PRIVACY.md)
+- [Capstone Word document](Khanu%20Learning%20Capstone%20Documentation.docx)

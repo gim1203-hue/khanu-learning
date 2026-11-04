@@ -43,3 +43,11 @@ Keep server-only secrets in ignored `.env` or hosting secrets. Any `VITE_*` valu
 | Frontend cannot reach an API | In local development, run `npm run dev`; the Vite proxy expects Express at port 5000 |
 | Pages opens a blank screen | Check Actions build logs and ensure the repository Pages source is GitHub Actions; verify `VITE_BASE_PATH` or the Pages workflow |
 | Pages bookings disappear | Browser demo records live only in that browser's local storage; this is not backend persistence |
+
+## Project links
+
+- Main application: https://khanu-learning.onrender.com/
+- GitHub Pages frontend: https://gim1203-hue.github.io/khanu-learning/
+- Source repository: https://github.com/gim1203-hue/khanu-learning
+- API health: https://khanu-learning.onrender.com/api/health
+- Service catalog: https://khanu-learning.onrender.com/api/services

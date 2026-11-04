@@ -1,19 +1,17 @@
-> AI integration update: the backend now supports a hosted model through AI_BASE_URL, AI_MODEL, and AI_API_KEY. In hosted mode, learner preferences and catalog choices leave the server for that provider; older local-only statements below describe local mode only. Read [AI setup](AI_SETUP.md) for current configuration, privacy boundaries, and live acceptance checks. Hosted AI is not verified until a response reports ai.status = generated.
+# Security and privacy
 
-# Security and privacy boundaries
+Express validates input, hashes passwords, issues expiring JWTs, rate-limits auth and AI requests, and scopes bookings to the signed-in user. MongoDB stores records. Browser tokens use local storage, so XSS remains a production-hardening consideration.
 
-## Full-stack mode
+## Hosted AI data
 
-The Express backend hashes account passwords with bcrypt, signs expiring JWTs, validates request bodies, applies rate limits to account endpoints, sets security headers, and scopes booking queries to the authenticated user. Production deployment must use HTTPS, a strong server-only `JWT_SECRET`, a protected MongoDB connection string, and a database network policy appropriate to the host.
+Google Gemini receives learner goal, subject, level, budget, and ranked public catalog facts through Express. Email, password, JWT, and booking notes are not included in that payload. Avoid personal details in goals. The native request uses store=false; provider retention and data-use policies still apply. This is not a claim of zero retention or on-device processing.
 
-The optional language model endpoint is local and optional. The project contains no hosted AI API key and does not call a hosted AI service. The standard matcher can run without the language model.
+AI_API_KEY, JWT_SECRET, and MONGODB_URI belong only in private Render Environment settings or ignored local .env. Never put secrets in VITE_* variables, screenshots, or Git. Provider errors are sanitized before server logging.
 
-## GitHub Pages demo
+## Modes and boundaries
 
-Pages serves public static HTML, CSS, and JavaScript. Its demo profile stores only a display name, and bookings are sample records stored in the visitor's browser. This client-side profile is not secure authentication, and local storage is not a private database. The Pages demo collects no email or password and should not be used with real learner records or sensitive notes.
+The main Render application uses MongoDB and server authentication. Pages can use that same API; only a build without an API origin uses browser-local demo profiles/bookings, which are not secure authentication. An unconfigured local database falls back to clearly labeled volatile memory.
 
-For actual users, configure `VITE_API_BASE_URL` to an HTTPS backend with MongoDB. The API URL is public by design. Do not place database credentials, JWT secrets, passwords, private tokens, or model server credentials in `VITE_*` variables, frontend source, or Git history.
+AI availability is intermittent. A bounded request and one retry for selected transient 5xx failures precede an explicit scoring fallback. Rate limiting is not a spending cap; configure provider usage limits separately. Render trusts its nearest proxy hop; other proxy topologies need review.
 
-## Product limits
-
-Sample tutor identities, availability, ratings, and prices are illustrative. Khanu does not currently verify tutors, process payments, send appointment confirmations, sync calendars, or provide tutoring/video calls. An appointment in this prototype is a saved planning record, not a confirmed real-world service.
+Sample tutors, ratings, prices, and availability are illustrative. Bookings are prototype planning records, not confirmed real-world lessons. Payments, tutor verification, notifications, calendar sync, and video lessons are outside scope.

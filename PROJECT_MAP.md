@@ -46,7 +46,7 @@ This guide maps the source files to their purpose so the project can be explored
 | `controllers/bookingController.js` | Booking creation, listing, ownership, and cancellation |
 | `controllers/aiController.js` | Validates recommendation requests |
 | `services/catalog.js`, `data.js` | Catalog and in-memory demo data access |
-| `services/recommendation.js` | Shared conceptually with Pages matcher; ranks catalog and optionally asks local LLM for wording |
+| `services/recommendation.js` | Shared conceptually with Pages matcher; ranks catalog and requests Gemini explanations with explicit fallback and optional local-model support |
 | `middleware/auth.js` | JWT validation and protected-route user loading |
 | `config/database.js` | Mongo connection, seed initialization, and explicit memory fallback |
 | `models/User.js`, `models/Service.js`, `models/Booking.js` | Mongoose document schemas |

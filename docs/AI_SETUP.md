@@ -12,7 +12,7 @@ This code must first be committed and deployed from the repository connected to 
 - AI_MODEL: an exact model identifier enabled for your provider account.
 - AI_API_KEY: an API key issued by that provider. Enter it directly in Render; never put it in chat, Git, screenshots, or VITE_* variables.
 
-The hosted integration sends POST /chat/completions with bearer authentication and max_completion_tokens. Confirm your selected provider/model supports that request format. Provider-specific adaptation may be needed. A chat subscription alone does not establish API access or available credit.
+Non-Google compatible providers use POST /chat/completions with bearer authentication and max_completion_tokens. Google uses native Interactions as described below. Confirm your selected provider/model supports that request format. Provider-specific adaptation may be needed. A chat subscription alone does not establish API access or available credit.
 
 Save the settings and redeploy. LOCAL_AI_URL is for a model reachable from the backend machine; a localhost address on Render cannot reach a model on your laptop.
 
@@ -40,3 +40,13 @@ Only describe the deployed feature as model-powered after the live acceptance ch
 ## Gemini native API
 
 Google endpoints are detected by hostname and use the native /v1beta/interactions API with x-goog-api-key authentication. Existing AI_BASE_URL values ending in /v1beta/openai remain supported without configuration changes. The request disables interaction storage (store=false), uses low thinking, and reads only model_output text; internal thoughts are not shown. Google Search is not enabled because explanations use the supplied tutoring catalog. Other compatible providers continue using chat completions.
+
+## Current configuration and evidence
+
+AI_BASE_URL: https://generativelanguage.googleapis.com/v1beta/openai
+
+AI_MODEL: gemini-3.5-flash-lite
+
+AI_API_KEY: keep the existing private key in Render Environment. Never include its value in documentation.
+
+Google uses a 45-second total timeout, with one retry for selected transient 5xx responses. Other providers use 20 seconds. Successful generated explanations and correct handling of unspecified budget are visible in user-provided live screenshots dated November 4, 2026. Other requests timed out or returned 503; consistent availability is not verified.

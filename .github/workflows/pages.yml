@@ -38,7 +38,7 @@ jobs:
         run: npm run build:pages
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
-          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || 'https://khanu-learning.onrender.com' }}
           VITE_STATIC_DEMO: ${{ vars.VITE_STATIC_DEMO }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4

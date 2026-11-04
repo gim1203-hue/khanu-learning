@@ -1,37 +1,21 @@
-> AI integration update: the backend now supports a hosted model through AI_BASE_URL, AI_MODEL, and AI_API_KEY. In hosted mode, learner preferences and catalog choices leave the server for that provider; older local-only statements below describe local mode only. Read [AI setup](AI_SETUP.md) for current configuration, privacy boundaries, and live acceptance checks. Hosted AI is not verified until a response reports ai.status = generated.
+# AI design and testing
 
-# AI feature and validation plan
+Khanu scores catalog entries by goal, subject, level, budget, and rating. Express sends the ranked options and preferences to Google Gemini, currently gemini-3.5-flash-lite, using native Interactions. The model explains the first choice and does not perform bookings. Blank budget and level are unspecified. Prompt constraints discourage invented services, availability, and outcomes, but do not guarantee factual accuracy.
 
-## AI-powered tutor matching
+Generated results report ai.status=generated and Khanu AI + smart matching. Failures report fallback, keep catalog cards, and display an honest notice. Google has a 45-second total timeout including one bounded retry for selected temporary server errors. Compatible non-Google providers use 20 seconds. Local model discovery remains available for development.
 
-The matchmaker is part of the learner workflow on the discovery page. A learner describes a goal and may add subject, level, and maximum price. A content-based ranker tokenizes the goal, compares it with service titles, levels, descriptions, and tags, and weights title matches above broader context matches. Level and budget constraints contribute to the ranking. The top three matches include specific reasons.
+## Evidence on November 4 2026
 
-In the full-stack version, when a local OpenAI-compatible Qwen service is online, Khanu sends the ranked choices and learner preferences to that local endpoint to generate a concise explanation. The prompt limits the model to catalog options and tells it not to claim to book appointments. If the model is offline or returns an error, the local ranker still provides the match cards and a useful explanation. No hosted model key is required. In the Pages edition, matching runs in browser JavaScript with no server/model request; the UI identifies this as browser-local smart matching.
+- Automated suite: 15 passing tests covering auth, bookings, scoring, browser demo, hosted/local explanations, provider failures, diagnostics, retry bounds, and unspecified preferences.
+- Live API: registration, login, duplicate account rejection, invalid credentials/tokens, booking, cancellation, filtering, and cross-account isolation passed.
+- MongoDB: connectivity and database-backed request paths are confirmed; a controlled restart-persistence check remains outstanding.
+- Live AI: user screenshots demonstrate generated explanations and corrected blank-budget handling. Other calls returned 503 or timed out. Reliable availability is not established.
+- UI: desktop matching/filtering and a basic 390px layout check were performed. Broader device testing, full browser-driven account workflows, and accessibility review remain.
 
-## Test plan
+Run npm test, npm run build, and npm run build:pages before submission. Use fictional learner details in live checks. Preserve both successes and failures. Simulated tests do not establish provider reliability.
 
-| Area | Check | Expected result |
-|---|---|---|
-| Matching | Algebra equations and middle-school level, $50 budget | Algebra Foundations ranks first with a level/budget reason |
-| Matching | Broad learning goal | Three ranked catalog options are returned |
-| Auth | Register with valid details | Account and token returned; password stored only as a hash |
-| Auth | Register duplicate email / invalid password | Clear 409 / 400 response |
-| Auth | Access protected route without token | 401 response |
-| Catalog | Search chemistry and filter Science | Matching service only |
-| Booking | Create a future booking | Booking appears on the current user's dashboard |
-| Booking | Create a past booking | 400 response; no record created |
-| Authorization | Request/cancel another user's booking | 404 response; record unchanged |
-| UI | Mobile and desktop layout, theme toggle, robot color selector | Navigation and controls remain usable |
-| Persistence | Run with MongoDB URI and restart | Mongo-backed user, catalog, and bookings remain |
-| Demo | Run without MongoDB URI | Catalog/matcher work and the UI warns that accounts/bookings are temporary |
-| Pages | Build with `npm run build:pages` | Repository base path is applied and static browser-demo mode is selected |
-| Pages profile | Enter a display name | Browser demo works without collecting an email or password |
-| Pages booking | Create, refresh, and cancel a sample session | Booking persists in browser local storage and remains labeled as demo data |
+## AI development disclosure
 
-## Automated checks
+AI assistance helped scaffold and review code, draft documentation, diagnose deployment errors, and create tests. The developer remains responsible for understanding the source, auth, schemas, matching, provider data boundary, and fallback behavior.
 
-`npm test` runs API workflow, backend matcher, and browser-demo tests. `npm run build` checks the local full-stack bundle. `npm run build:pages` builds the static edition. The register-book-cancel workflow and Mongo persistence should be run against a configured test database before a public full-stack release.
-
-## AI use disclosure
-
-AI assistance was used to help scaffold UI and API code, plan the architecture, draft project documentation, and create focused checks. The recommendation logic is readable and deterministic, with an optional local language-model explanation. Before submission, the developer should walk through the source, run the workflows, inspect environment settings, and explain the database model and matching behavior.
+See [AI setup](AI_SETUP.md) and [privacy](SECURITY_AND_PRIVACY.md).
