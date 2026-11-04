@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { catalog } from '../data.js';
-import { scoreRecommendations, tutorMatch, sanitizedProviderMessage } from './recommendation.js';
+import { scoreRecommendations, tutorMatch, sanitizedProviderMessage, requestWithRetry } from './recommendation.js';
 
 test('recommendation ranks the requested subject and respects budget', () => {
   const result = scoreRecommendations(catalog, { goal: 'I need help solving equations', subject: 'algebra', level: 'Middle school', budget: 50 });
@@ -98,4 +98,19 @@ test('server diagnostics redact keys and learner input and limit log size', () =
   assert.equal(output.includes('AIza'), false);
   assert.equal(output.includes('\n'), false);
   assert.ok(sanitizedProviderMessage('x'.repeat(1000), '').length <= 600);
+});
+
+test('transient outage retries once and recovers; client failures are not retried', async () => {
+  let calls = 0;
+  const response = await requestWithRetry('https://example.test', {}, async () => ({ status: ++calls === 1 ? 503 : 200 }), async () => {});
+  assert.equal(response.status, 200);
+  assert.equal(calls, 2);
+  calls = 0;
+  await requestWithRetry('https://example.test', {}, async () => { calls++; return { status: 503 }; }, async () => {});
+  assert.equal(calls, 2);
+  for (const status of [400, 401, 403, 404, 429]) {
+    calls = 0;
+    await requestWithRetry('https://example.test', {}, async () => { calls++; return { status }; }, async () => {});
+    assert.equal(calls, 1);
+  }
 });

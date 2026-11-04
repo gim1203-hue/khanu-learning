@@ -21,6 +21,16 @@ export function scoreRecommendations(services, { goal = '', subject = '', level 
   }).sort((a, b) => b.score - a.score || b.service.rating - a.service.rating).slice(0, 3);
 }
 
+// One bounded retry for transient outages; reuse the original total request timeout.
+export async function requestWithRetry(url, options, fetchImpl, pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms))) {
+  let response = await fetchImpl(url, options);
+  if (![500, 502, 503, 504].includes(response.status) || options.signal?.aborted) return response;
+  await response.body?.cancel();
+  await pause(1000 + Math.floor(Math.random() * 250));
+  options.signal?.throwIfAborted();
+  return fetchImpl(url, options);
+}
+
 // Keep provider diagnostics in private server logs, never in the public response.
 export function sanitizedProviderMessage(message, apiKey, preferences = {}) {
   let safe = String(message || 'No provider message supplied.');
@@ -87,10 +97,10 @@ export async function tutorMatch(services, preferences, configuration, fetchImpl
       store: false,
       generation_config: { max_output_tokens: 4096, thinking_level: 'low' },
     } : chatRequest;
-    const response = await fetchImpl(endpoint, {
+    const response = await requestWithRetry(endpoint, {
       method: 'POST', headers: requestHeaders, signal: AbortSignal.timeout(20000), redirect: 'error',
       body: JSON.stringify(requestBody),
-    });
+    }, fetchImpl);
     if (!response.ok) {
       // Classify provider failures without returning raw messages or any credentials.
       const error = await response.json().catch(() => ({}));

@@ -8,6 +8,8 @@ import api from './routes/api.js';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const buildPath = path.resolve(here, '../../frontend/dist');
 const app = express();
+// Render terminates requests at its reverse proxy. Trust only the nearest hop.
+if (process.env.RENDER === 'true') app.set('trust proxy', 1);
 app.disable('x-powered-by');
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',').map((v) => v.trim()) : true, credentials: true }));
